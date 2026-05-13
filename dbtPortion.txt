@@ -1,0 +1,33 @@
+Phase 1 (Highest ROI)
+Start with these 
+    Difference between DELETE/TRUNCATE/DROP
+    Primary Key vs Unique Key
+    WHERE vs HAVING
+    UNION vs UNION ALL
+    EXISTS vs IN
+    CHAR vs VARCHAR
+    INNER JOIN vs OUTER JOIN
+    COMMIT vs ROLLBACK
+    2NF vs 3NF
+    ACID properties
+    CAP theorem
+    MongoDB document structure
+    Aggregation functions
+    NULL behavior
+    AUTO_INCREMENT
+    Correlated subqueries
+    SQL Queries
+    Joins
+    Aggregate Functions
+    Subqueries
+    Constraints
+Phase 2
+    Normalization
+    Transactions + ACID
+    Views + Indexes
+    Procedures + Functions
+Phase 3
+    MongoDB
+    Triggers
+    Cursors
+    Exception Handling

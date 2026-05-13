@@ -1,0 +1,107 @@
+order
+    dynamic_cast
+    static_cast
+    reinterpret_cast
+    const_cast
+        OOP basics
+        Theory differences between various topics
+        access specifiers
+        namespace
+    Constructors + Destructor
+        Default constructor
+        Parameterized constructor
+        Constructor overloading
+        Copy constructor
+        Destructor
+        Dynamic initialization
+    Inheritance 
+        theory + code : types and Virtual base class
+        diamond problem
+        Constructors in derived class
+    Function overloading
+    Function prototyping
+    Inline functions
+    Call by reference
+    Polymorphism + Virtual Functions
+        Virtual keyword behavior
+        VTABLE concepts (indirectly)
+        Late binding
+        Abstract class rules
+        Pure virtual syntax
+    Pointers + Memory Management
+        Pointers
+        Arrays using pointers
+        Class pointers
+        this pointer
+        new/delete
+        Dynamic memory allocation
+        Pointer passing
+        new/delete
+        malloc vs new
+        free vs delete
+        memory leaks
+        dangling pointers
+        this pointer
+    templates + stl topics
+        Vector
+        Stack
+        Queue
+        Map
+    Standard Library basics
+    Operator Overloading
+    Exception Handling
+        throw
+        catch
+        rethrow
+        custom exceptions
+        exception flow
+    Templates
+    STL
+        Vector
+        Stack
+        Queue
+        Map
+        STL concepts
+    File Handling
+    Remaining basics
+topics 
+    OOP Concepts
+    Constructors/Destructor
+    Inheritance
+    Virtual Functions + Abstract Class
+    Pointers & Memory Management
+    Operator Overloading
+    STL
+    Exception Handling
+    Templates
+if time left 
+    C++ vs C
+        Features
+        History
+        Program structure
+Better topics
+    static data members
+    static member functions
+    const members
+    Topics:
+        Arithmetic
+        Logical
+        Relational
+        Unary
+        Ternary
+        Assignment
+
+    Constructor calling order
+    Destructor order
+    Copy constructor
+    Virtual functions
+    Function overriding vs overloading
+    Pointer arithmetic
+    this pointer
+    Static members
+    Multiple inheritance
+    Diamond problem
+    Operator overloading
+    Reference vs value passing
+    Dynamic memory allocation
+    Template instantiation

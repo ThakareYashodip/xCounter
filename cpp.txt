@@ -37,6 +37,9 @@ Output->                                                                        
         o pending {}, (,) = everything
         o static objects 
         o Copy constructor
+        o types of pointers(unique pointer) vs types of references both theory and code mcqs 
+        o Padding/alignment for sizeOf questions
+        o ascii value mcqs and must learn codes/values
 2. 
     class A {
     public:
@@ -55,11 +58,21 @@ FIXME:One more trick question
         A() { cout << "C"; }
         ~A() { cout << "D"; }
     };
-    
+
     int main() {
         A a, b;
     }
+        Answer->                                                                                                                                            CCDD one line two instantiations (CC)only then the programme ends .'. destruction can start (DD)
+FIXME:
+    class A {
+    public:
+        A() { cout << "C"; }
+    };
 
+    int main() {
+        A arr[3];
+    }
+    Ans which means ->                                                                                                                      CCC '.' default constructor called three times giving default values to fields otherwise if we wanted arr[0]=new A() could have also been done but you know this is CPP so A obj itself calls default constructor
 3.
     class A {
         int x;
@@ -95,6 +108,14 @@ FIXME:One more trick question
         A y = fun();
     }
     allowed ? if yes then when not allowed ->                                                                                                                 Yes allowed provided if the class was made to have properties and no this was in the setters to mutate/assign values 
+FIXME ONE MORE 
+    class A {};
+
+    A& fun() {
+        A x;
+        return x;
+    }
+    Allowed ->                                                                                                                                                          Not allowed because it returns dangling reference 
 5. 
     class A {
     public:
@@ -111,6 +132,35 @@ FIXME:One more trick question
         fun();
     }
     Output->                                                                                                            CD not CDCD because static objects are shared the entire execution of the programme
+FIXME: Now constant objects 
+    class A {
+    public:
+        void show() {
+            cout << "Hi";
+        }
+    };
+
+    int main() {
+        const A a;
+        a.show();
+    }
+    Ans ->                                                                                                                              Compilation error, a constant object cannot access non-const member function
+FIXME: One more 
+    class A {
+    public:
+        ~A() { cout << "A"; }
+    };
+
+    class B {
+    public:
+        ~B() { cout << "B"; }
+    };
+
+    int main() {
+        A a;
+        B b;
+    }
+    Output ->                                                                                                                   BA because last statement is Class B instantiation which means we will start with ~B
 6.
 Inheritance from here onwards 
 class A {
@@ -122,3 +172,75 @@ public:
 int main() {
     A a('A');
 }
+Ans->                                                                                                                       1 
+Access Specifier from here onwards
+1.    class A {
+    private:
+        int x = 10;
+
+    public:
+        int get() {
+            return x;
+        }
+    };
+
+    int main() {
+        A a;
+        cout << a.get();
+    }
+read ahead    Output->                                                                                                    10 because we can't access it from outside but from inside allowed.Same goes for pointers, if x was same private and we have int* get(){return &x;}
+TODO: One more 
+    class A {
+    private:
+        int x = 10;
+    };
+
+    int main() {
+        A a;
+
+        int* p = (int*)&a;
+        cout << *p;
+    }
+    Output->                                                                                                may print 10 because access specifiers pose their restrictions at compile time alone NOT runtime
+
+2.    class Base {
+    protected://Note protected because if it was private even though passed down the heirarchy but we can't access NOT even from within the class
+        int x = 10;
+    };
+    
+    class Derived : public Base {
+    public:
+        void fun1(Derived d) {
+            cout << d.x;
+        }
+        Allowed ? ->                                                                                                                                            yes
+        void fun2(Base b) {
+            cout << b.x;
+        }
+        Allowed ->                                                                                                                                                          not allowed because parent object 
+    };
+   
+Friend from here onwards 
+1.
+    class A {
+        friend class B;
+    private:
+        int x = 10;
+    };
+
+    class B {};
+
+    class C : public B {
+    public:
+        void fun(A a) {
+            cout << a.x;
+        }
+    };
+    Output->                                                                            despite B is a friend of A, friendship doesn't get inherited .'. gives error on inheriting friend class and using it to access A class' method 
+    Friendship is                                                                                                                           neither inherited, transitive nor mutual
+Access specifier in cpp 
+class vs struct 
+    default access if left as int x; instead of public: int x or otherwise in struct ;->                                                                       class private BUT struct it is public
+    default scope for inheritance if left as struct/class A: B{} ->                                                                         class again private, struct public
+can a friend function access private members too despite not being a member method ->                                                                           yes 
+Theory 
