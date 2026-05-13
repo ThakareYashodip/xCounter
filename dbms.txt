@@ -1,0 +1,2 @@
+single row subquery might use aggregate functions in select statement 
+but when keywords like IN, EXISTS, ANY, ALL = are used then multiple row subquery

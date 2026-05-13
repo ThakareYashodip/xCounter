@@ -1,0 +1,124 @@
+if first class object is present as a property in second class definition n both constructors have first and second cout statements then doing Second scd; output ->                                                                    first, second reason is member objects are initialized earlier than the constructor  
+class A {
+public:
+    A(int x) {}
+};
+
+int main() {
+    A a;
+}
+Output->                                                                                        Compilation Error itself, we don't get to have default constructors in cpp the way we have in java
+1.
+    class A {
+    public:
+        A() { cout << "C"; }
+        A(const A&) { cout << "Copy"; }
+    };
+
+    int main() {
+        A a;
+        A b = a;//this is called ->                                                                                 copy initialization
+    }
+FIXME:One more even more tricky one 
+class A {
+public:
+    A() { cout << "C"; }
+    A(const A&) { cout << "Copy"; }
+};
+
+void fun(A x) {}
+
+int main() {
+    A a;
+    fun(a);
+}
+Output->                                                                                                            CCopy if you pass an object as value or pass by value then it immediately invokes the copy constructor 
+    TODO
+        o pending {}, (,) = everything
+        o static objects 
+        o Copy constructor
+2. 
+    class A {
+    public:
+        A() { cout << "C"; }
+        ~A() { cout << "D"; }
+    };
+
+    int main() {
+        A();
+        cout << "X";
+    }
+    Ans->                                                                                                                   CDX Reason temporary objects are immediately destroyed in empty lines or end of statement
+FIXME:One more trick question 
+    class A {
+    public:
+        A() { cout << "C"; }
+        ~A() { cout << "D"; }
+    };
+    
+    int main() {
+        A a, b;
+    }
+
+3.
+    class A {
+        int x;
+    public:
+        void set(int x) {
+            x = x;
+        }
+
+        void show() {
+            cout << x;
+        }
+    };
+
+    int main() {
+        A a;
+        a.set(10);
+        a.show();
+    }
+    Output->                                                                                                                        Garbage value because parameter shadows member variable
+4. 
+    class A {
+    public:
+        A() { cout << "C"; }
+        A(const A&) { cout << "Copy"; }
+    };
+
+    A fun() {
+        A x;
+        return x;
+    }
+
+    int main() {
+        A y = fun();
+    }
+    allowed ? if yes then when not allowed ->                                                                                                                 Yes allowed provided if the class was made to have properties and no this was in the setters to mutate/assign values 
+5. 
+    class A {
+    public:
+        A() { cout << "C"; }
+        ~A() { cout << "D"; }
+    };
+
+    void fun() {
+        static A a;
+    }
+
+    int main() {
+        fun();
+        fun();
+    }
+    Output->                                                                                                            CD not CDCD because static objects are shared the entire execution of the programme
+6.
+Inheritance from here onwards 
+class A {
+public:
+    A(int x) { cout << 1; }
+    A(double y) { cout << 2; }
+};
+
+int main() {
+    A a('A');
+}
