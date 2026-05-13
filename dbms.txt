@@ -1,2 +1,493 @@
 single row subquery might use aggregate functions in select statement 
 but when keywords like IN, EXISTS, ANY, ALL = are used then multiple row subquery
+
+Considering the CNCE examination DBT modules, I wanted to understand what kind of tricky questions would be asked for the topic, procedures, and functions, and how can this topic be exploited to ask seriously difficult questions. You can make MCQ questions for me to go through them along with a short explanation for the reason behind this particular option being the correct answer, so that I could feel confident about this topic.
+
+In CDAC CMCE/CNCE-style DBT exams, Procedures vs Functions is one of the easiest topics to make deceptively tricky.
+Why? Because examiners can combine:
+
+return behavior
+parameter modes
+transaction control
+invocation syntax
+SQL restrictions
+side effects
+overloading
+NULL handling
+exception behavior
+deterministic/non-deterministic behavior
+
+Most students only memorize:
+
+“Function returns value, procedure does not.”
+
+That is far too shallow for CMCE-level MCQs.
+
+Where Difficult Questions Come From
+1. Function vs Procedure Invocation Context
+
+This is the #1 area for twisted questions.
+
+Core Trap
+Functions can generally be used inside SQL expressions.
+Procedures cannot.
+
+Example:
+
+SELECT my_func(10) FROM dual;
+
+Valid.
+
+SELECT my_proc(10) FROM dual;
+
+Invalid.
+
+Exam Twist
+
+They will give syntactically similar code snippets.
+
+2. RETURN Semantics
+Function
+
+Must return exactly one value using RETURN.
+
+Procedure
+
+May return values using OUT/IN OUT parameters.
+
+Trap
+
+A procedure can still “return data” even though it doesn't use RETURN value semantics.
+
+3. IN / OUT / IN OUT Parameters
+
+This topic creates extremely confusing MCQs.
+
+Mode	Read	Modify	Default
+IN	Yes	No	Yes
+OUT	No initial value	Yes	No
+IN OUT	Yes	Yes	No
+Common Exam Trap
+CREATE OR REPLACE PROCEDURE p(x IN NUMBER)
+IS
+BEGIN
+   x := 10;
+END;
+
+This fails because IN parameters are read-only.
+
+Many students miss this.
+
+4. Transaction Control Inside Functions
+
+Extremely favorite tricky area.
+
+Important Concept
+
+Functions used inside SQL statements should not perform transaction control operations like:
+
+COMMIT
+ROLLBACK
+SAVEPOINT
+Exam Trick
+
+The function compiles but fails when invoked from SQL.
+
+5. DML Inside Functions
+
+Very dangerous MCQ area.
+
+Function called from SQL:
+
+Restrictions apply.
+
+Example:
+
+SELECT my_func(empno) FROM emp;
+
+If function modifies same table being queried → mutating/side-effect issues.
+
+6. Deterministic vs Non-Deterministic Behavior
+
+They may ask:
+
+SYSDATE
+DBMS_RANDOM
+
+inside functions.
+
+Function output changes for same input.
+
+This creates optimization-related theoretical MCQs.
+
+7. Overloading
+
+Procedures/functions can be overloaded.
+
+Trap
+FUNCTION calc(x NUMBER)
+FUNCTION calc(x VARCHAR2)
+
+Valid.
+
+But ambiguity can occur with NULL.
+
+8. NULL Parameter Ambiguity
+
+Very advanced MCQ trick.
+
+calc(NULL)
+
+Which overloaded version?
+
+Ambiguous.
+
+9. Difference Between Compile-Time and Runtime Errors
+
+Examiner gives code that:
+
+compiles successfully
+fails only during execution
+
+Students often assume compile error.
+
+10. Procedure Calling Syntax
+Procedure
+EXEC proc_name;
+
+or inside block:
+
+BEGIN
+   proc_name;
+END;
+Function
+v := func_name;
+
+or
+
+SELECT func_name() FROM dual;
+Now Let’s Practice Difficult MCQs
+MCQ 1
+
+What happens here?
+
+CREATE OR REPLACE FUNCTION f1
+RETURN NUMBER
+IS
+BEGIN
+   DBMS_OUTPUT.PUT_LINE('Hello');
+END;
+
+A) Executes successfully
+B) Runtime error only
+C) Compile error
+D) Infinite loop
+
+Answer:
+
+✅ C) Compile error
+
+Reason
+
+Function must return value explicitly.
+
+RETURN some_value;
+
+is mandatory.
+
+MCQ 2
+CREATE OR REPLACE PROCEDURE p1(x IN NUMBER)
+IS
+BEGIN
+   x := x + 10;
+END;
+
+A) Valid
+B) Runtime error
+C) Compile error
+D) Logical error only
+
+Answer:
+
+✅ C) Compile error
+
+Reason
+
+IN parameter is read-only.
+
+MCQ 3
+CREATE OR REPLACE FUNCTION f1
+RETURN NUMBER
+IS
+BEGIN
+   RETURN 10;
+   RETURN 20;
+END;
+
+A) Returns 10
+B) Returns 20
+C) Compile error
+D) Runtime error
+
+Answer:
+
+✅ A) Returns 10
+
+Reason
+
+Second RETURN is unreachable.
+
+PL/SQL allows it though logically dead.
+
+MCQ 4
+SELECT my_proc() FROM dual;
+
+Assume my_proc is procedure.
+
+A) Valid
+B) Runtime error
+C) Compile error
+D) Returns NULL
+
+Answer:
+
+✅ C) Compile error
+
+Reason
+
+Procedures cannot be used inside SQL expressions.
+
+MCQ 5
+CREATE FUNCTION f1
+RETURN NUMBER
+IS
+BEGIN
+   COMMIT;
+   RETURN 1;
+END;
+
+A) Always invalid
+B) Valid compilation
+C) Syntax error
+D) RETURN error
+
+Answer:
+
+✅ B) Valid compilation
+
+Reason
+
+Compilation succeeds.
+
+But problems arise depending on how function is invoked.
+
+This distinction is frequently tested.
+
+MCQ 6
+SELECT f1() FROM dual;
+
+where f1 contains COMMIT.
+
+A) Always works
+B) Fails during SQL execution
+C) Compile error
+D) Infinite recursion
+
+Answer:
+
+✅ B) Fails during SQL execution
+
+Reason
+
+Transaction control inside SQL-invoked functions is restricted.
+
+MCQ 7
+CREATE OR REPLACE FUNCTION calc(x NUMBER)
+RETURN NUMBER
+IS
+BEGIN
+   RETURN x*x;
+END;
+
+Invocation:
+
+EXEC calc(5);
+
+A) Valid
+B) Compile error
+C) Runtime error
+D) Invalid invocation
+
+Answer:
+
+✅ D) Invalid invocation
+
+Reason
+
+Functions should return value into variable or SQL expression.
+
+Correct:
+
+SELECT calc(5) FROM dual;
+MCQ 8
+CREATE OR REPLACE PROCEDURE p1(x OUT NUMBER)
+IS
+BEGIN
+   DBMS_OUTPUT.PUT_LINE(x);
+END;
+
+A) Valid
+B) x contains NULL initially
+C) Compile error
+D) Runtime error
+
+Answer:
+
+✅ B) x contains NULL initially
+
+Reason
+
+OUT parameters do not carry incoming value.
+
+MCQ 9
+FUNCTION f(x NUMBER)
+RETURN NUMBER
+
+FUNCTION f(x VARCHAR2)
+RETURN NUMBER
+
+A) Invalid
+B) Valid overloading
+C) Duplicate definition
+D) Recursive conflict
+
+Answer:
+
+✅ B) Valid overloading
+
+Reason
+
+Parameter datatype differs.
+
+MCQ 10
+f(NULL);
+
+for overloaded versions above.
+
+A) NUMBER version called
+B) VARCHAR2 version called
+C) Ambiguous call possible
+D) Always compile error
+
+Answer:
+
+✅ C) Ambiguous call possible
+
+Reason
+
+NULL has no fixed datatype.
+
+Very favorite advanced MCQ concept.
+
+MCQ 11
+CREATE FUNCTION f1
+RETURN NUMBER
+IS
+BEGIN
+   INSERT INTO emp VALUES (...);
+   RETURN 1;
+END;
+
+A) Always invalid
+B) Compile error
+C) May fail depending on invocation context
+D) INSERT ignored
+
+Answer:
+
+✅ C) May fail depending on invocation context
+
+Reason
+
+DML restrictions depend on whether function is called from SQL.
+
+MCQ 12
+
+Which statement is TRUE?
+
+A) Procedures always return nothing
+B) Functions cannot have OUT parameters
+C) Procedures can return multiple values via OUT parameters
+D) Functions cannot be called from SQL
+
+Answer:
+
+✅ C) Procedures can return multiple values via OUT parameters
+
+High-Level “Exploitable” Concepts for Hard Questions
+
+These are the concepts examiners love to weaponize:
+
+Concept	Why It Becomes Tricky
+SQL vs PL/SQL context	Same function behaves differently
+OUT parameter initialization	Undefined/NULL confusion
+Function side effects	Runtime vs compile behavior
+Transaction statements	Context-sensitive legality
+Overloading + NULL	Ambiguity
+RETURN placement	Control flow confusion
+IN parameter immutability	Looks syntactically valid
+Procedure/function invocation syntax	Small syntax differences
+Nested calls	Scope confusion
+Exception propagation	Hidden runtime behavior
+Ultra-Important Exam Notes
+Procedures
+No mandatory RETURN value
+Can return multiple outputs via OUT
+Cannot be used in SQL expressions directly
+Functions
+Must return one value
+Can be used in SQL
+More restrictions when called from SQL
+Prefer side-effect-free logic
+Most Dangerous Confusion Point
+
+Students think:
+
+“If code compiles, it must execute.”
+
+Wrong.
+
+In procedures/functions, many CMCE questions exploit:
+
+compile success
+runtime failure
+SQL-context restrictions
+
+This is the core of advanced MCQs.
+
+One Final Killer Question
+CREATE FUNCTION f1
+RETURN NUMBER
+IS
+BEGIN
+   DELETE FROM emp;
+   COMMIT;
+   RETURN 1;
+END;
+
+What is true?
+
+A) Function never compiles
+B) Function compiles successfully
+C) Function can always execute
+D) DELETE is ignored
+
+Answer:
+
+✅ B) Function compiles successfully
+
+Hidden Twist
+
+Execution behavior depends entirely on invocation context.
+
+This is exactly the kind of CMCE trick question examiners love.
